@@ -31,13 +31,13 @@ app.post("/clone", async (req, res) => {
   const repoName = gitUrl.split("/").pop().replace(".git", "");
   const checkIfRepoExists = fs.existsSync(path.resolve(`repos/${repoName}`));
     if (checkIfRepoExists) {
-        return res.status(400).send({ error: "Repo already exists" });
+        return res.status(400).json({ error: "Repo already exists", url: repoName });
     }
   exec(`git clone ${gitUrl} repos/${repoName}`, (error) => {
     if (error) {
-      return res.status(500).send({ error: error.message });
+      return res.status(500).json({ error: error.message });
     }
-    res.json({ url: `http://localhost:3000/${repoName}` });
+    res.json({ url: repoName });
   });
 });
 
@@ -65,7 +65,9 @@ app.use('/:repoName', (req, res, next) => {
 });
 
 app.use((req, res) => {
-  res.status(404).send("Not Found");
+  const err404Html = fs.readFileSync(path.resolve("404.html"), "utf-8");
+  const err404HtmlWithMessage = err404Html.replace("{{message}}", "Page not found");
+  res.status(404).send(err404HtmlWithMessage);
 });
 
 app.listen(3000, () => {
