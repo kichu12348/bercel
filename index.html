@@ -37,13 +37,16 @@
           });
           const data = await res.json();
           if (!res.ok) {
-            alertBox.textContent = data.error || "Something went wrong!";
+            const content = data.url? `Already Deployed! Open: ${window.location.origin+"/"+data.url}` : data.error || "Something went wrong!";
+            alertBox.textContent = content;
+            const href = window.location.origin + "/" + data.url;
+            if(data.url) alertBox.onclick = () => window.open(href, "_blank");
             alertBox.className = "alert error";
             alertBox.style.display = "block";
           } else {
             const href = window.location.origin + "/" + data.url;
             alertBox.textContent = `Deployed! Open: ${href}`;
-            alertBox.onclick = () => window.open(data.url, "_blank");
+            alertBox.onclick = () => window.open(href, "_blank");
             alertBox.className = "alert success";
             alertBox.style.display = "block";
           }
