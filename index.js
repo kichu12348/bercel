@@ -7,6 +7,8 @@ import { exec } from "child_process";
 
 const app = express();
 
+const port = process.env.PORT || 3000;
+
 app.use(bodyParser.json());
 
 //check if the repos folder exists
@@ -70,7 +72,7 @@ app.use((req, res) => {
   res.status(404).send(err404HtmlWithMessage);
 });
 
-app.listen(3000, () => {
+app.listen(port, () => {
   console.log(
     "Server started on: " + chalk.hex("#ed455e")("http://localhost:3000")
   );
